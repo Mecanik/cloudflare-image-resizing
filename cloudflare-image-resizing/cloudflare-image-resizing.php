@@ -33,7 +33,7 @@ function cloudflare_srcset($sources)
 {
 	// Don't alter URL's for Administrator(s)
 	if(is_admin()) {
-		return $image;
+		return $sources;
 	}
 	
     foreach ($sources as $key => $value)
@@ -65,7 +65,7 @@ function cloudflare_get_attachment_url($url, $post_id)
 {
 	// Don't alter URL's for Administrator(s)
 	if(is_admin()) {
-		return $image;
+		return $url;
 	}
 	
 	if(!strstr($url, '/cdn-cgi/image/'))
@@ -88,9 +88,14 @@ function cloudflare_get_attachment_url($url, $post_id)
 // This solves several problems with themes that use crappy methods to include images, for example Divi Theme uses "esc_attr($logo)"
 // With the below function we can check if this is the case and alter the URL
 function cloudflare_attribute_escape( $safe_text, $text ) 
-{ 
+{ 	
 	$safe_text = wp_check_invalid_utf8( $text );
 	$safe_text = _wp_specialchars( $safe_text, ENT_QUOTES );
+	
+	// Don't alter URL's for Administrator(s)
+	if(is_admin()) {
+		return $safe_text;
+	}
 	
 	// Check if this is a URL
 	if(filter_var($safe_text, FILTER_VALIDATE_URL))
@@ -117,6 +122,11 @@ function cloudflare_attribute_escape( $safe_text, $text )
 // Same problem as above with Divi and similar themes
 function cloudflare_clean_url($url, $protocols, $context) 
 {
+	// Don't alter URL's for Administrator(s)
+	if(is_admin()) {
+		return $url;
+	}
+	
 	// Check if this is a valid image
 	// JPEG, PNG, GIF (including animations), and WebP images. SVG is not supported
 	if(in_array(strtolower(pathinfo($url, PATHINFO_EXTENSION)), [ 'jpg', 'jpeg', 'gif', 'png', 'webp' ]))
