@@ -3,7 +3,7 @@
 * Plugin Name: CloudFlare Image Resizing
 * Plugin URI: https://github.com/Mecanik/cloudflare-image-resizing/
 * Description: This plugin will replace Image URL's (including srcset) so you can use the CloudFlare Image Resizing service. As an added bonus it will also add the required width/height for all images that are missing them.
-* Version: 1.0
+* Version: 1.1
 * Author: Mecanik
 * Author URI: https://github.com/Mecanik/
 **/
