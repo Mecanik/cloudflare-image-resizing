@@ -72,7 +72,7 @@ function cloudflare_get_attachment_url($url, $post_id)
 	{
 		// Check if this is a valid image
 		// JPEG, PNG, GIF (including animations), and WebP images. SVG is not supported
-		if(in_array(strtolower(pathinfo($safe_text, PATHINFO_EXTENSION)), [ 'jpg', 'jpeg', 'gif', 'png', 'webp' ]))
+		if(in_array(strtolower(pathinfo($url, PATHINFO_EXTENSION)), [ 'jpg', 'jpeg', 'gif', 'png', 'webp' ]))
 		{
 			$old_url = wp_parse_url($url);
 			
