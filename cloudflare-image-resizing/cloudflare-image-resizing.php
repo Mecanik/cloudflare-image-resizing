@@ -3,7 +3,7 @@
 * Plugin Name: CloudFlare Image Resizing
 * Plugin URI: https://github.com/Mecanik/cloudflare-image-resizing/
 * Description: This plugin will replace Image URL's (including srcset) so you can use the CloudFlare Image Resizing service. As an added bonus it will also add the required width/height for all images that are missing them.
-* Version: 1.1
+* Version: 1.2
 * Author: Mecanik
 * Author URI: https://github.com/Mecanik/
 **/
@@ -25,6 +25,9 @@ function cloudflare_single_img( $image )
     $newurl = $url['scheme'] . '://' . $url['host'] . '/cdn-cgi/image/width=' . $image[1] . ',height=' . $image[2] . ',quality=80,format=auto,onerror=redirect,metadata=none' . $url['path'];
 
     $image[0] = $newurl;
+
+    // Strip image dimensions from source
+    $image[0] = preg_replace('/-[0-9]{1,4}x[0-9]{1,4}./', '.', $newurl);
 
     return $image;
 }
@@ -55,7 +58,8 @@ function cloudflare_srcset($sources)
 		
         $newurl = $url['scheme'] . '://' . $url['host'] . '/cdn-cgi/image/' . $cfparams . $url['path'];
 		
-        $sources[$key]['url'] = $newurl;
+        // Strip image dimensions from source
+        $sources[$key]['url'] = preg_replace('/-[0-9]{1,4}x[0-9]{1,4}./', '.', $newurl);
     }
 	
     return $sources;
@@ -78,7 +82,8 @@ function cloudflare_get_attachment_url($url, $post_id)
 			
 			$newurl = $old_url['scheme'] . '://' . $old_url['host'] . '/cdn-cgi/image/quality=80,format=auto,onerror=redirect,metadata=none' . $old_url['path'];
 
-			return $newurl;
+			// Strip image dimensions from source
+			return preg_replace('/-[0-9]{1,4}x[0-9]{1,4}./', '.', $newurl);
 		}
 	}
 	
@@ -110,8 +115,9 @@ function cloudflare_attribute_escape( $safe_text, $text )
 				$old_url = wp_parse_url($safe_text);
 				
 				$newurl = $old_url['scheme'] . '://' . $old_url['host'] . '/cdn-cgi/image/quality=80,format=auto,onerror=redirect,metadata=none' . $old_url['path'];
-				
-				return $newurl;
+
+				// Strip image dimensions from source
+				return preg_replace('/-[0-9]{1,4}x[0-9]{1,4}./', '.', $newurl);
 			}
 		}
 	}
@@ -137,7 +143,8 @@ function cloudflare_clean_url($url, $protocols, $context)
 			
 			$newurl = $old_url['scheme'] . '://' . $old_url['host'] . '/cdn-cgi/image/quality=80,format=auto,onerror=redirect,metadata=none' . $old_url['path'];
 			
-			return $newurl;
+			// Strip image dimensions from source
+			return preg_replace('/-[0-9]{1,4}x[0-9]{1,4}./', '.', $newurl);
 		}
 	}
 	
