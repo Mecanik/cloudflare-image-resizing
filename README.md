@@ -1,5 +1,5 @@
 # Cloudflare Image Resizing plugin for WordPress
- Rewrites images on the fly so you to use the [Cloudflare Image Resizing](https://blog.cloudflare.com/announcing-cloudflare-image-resizing-simplifying-optimal-image-delivery/) feature.
+ Rewrites images on the fly so you can use the [Cloudflare Image Resizing](https://blog.cloudflare.com/announcing-cloudflare-image-resizing-simplifying-optimal-image-delivery/) service.
 
  You will speed up your website drastically by offering to browsers AVIF/WEBP images delivered from global locations thanks to Cloudflare.
 
@@ -48,6 +48,8 @@
 
 ### Special Thanks
  These are the people that spent time and effort to test and help improve the plugin, as well as sponsoring development.
+
+* [Urban Change Lab](https://www.urbanchangelab.com)
 
 ### Assistance
  In your are in immediate need of commercial help/advice/assistance, I can offer you my assistance for a small fee.
