@@ -99,7 +99,13 @@ class Utils
 
         // fallback
         $parsed_url = wp_parse_url($url);
-        
+
+        // Check if image host is external. If so, then don't strip the root url from the path
+        $host = rtrim(str_replace(['http://', 'https://', ], '', CF_IMAGE_RESIZING_SITE_URL), '/');
+        if (isset($parsed_url['host']) && $parsed_url['host'] != $host) {
+            $parsed_url['path'] = '/'.$parsed_url['scheme'].'://'.$parsed_url['host'].$parsed_url['path'];
+        }  
+		
         return (isset($parsed_url['path']) && $parsed_url['path'] !== '') ? $parsed_url['path'] : '';
     }
     
