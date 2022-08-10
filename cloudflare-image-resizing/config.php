@@ -31,16 +31,22 @@ if (!defined('ABSPATH')) {
 
 // You MUST set your website URL here, otherwise the plugin will not WORK.
 // NO TRAILING SLASH (/)
-define('CF_IMAGE_RESIZING_SITE_URL', '');
+if(!defined('CF_IMAGE_RESIZING_SITE_URL')) {
+    define('CF_IMAGE_RESIZING_SITE_URL', '');
+}
 
 // You MUST set your website FOLDER here, for example if it's in a sub-folder.
 // If you installed in "/blog" for example, then enter "/blog", otherhwise just
 // leave this EMPTY.
-define('CF_IMAGE_RESIZING_SITE_FOLDER', '');
+if(!defined('CF_IMAGE_RESIZING_SITE_FOLDER')) {
+    define('CF_IMAGE_RESIZING_SITE_FOLDER', '');
+}
 
 // This defines your web hosting HOME path, like: "/home/.../public_html/"
 // ABSPATH should work but if you notice any errors set this manually yourself.
-define('CF_IMAGE_RESIZING_HOME_DIR', ABSPATH);
+if(!defined('CF_IMAGE_RESIZING_HOME_DIR')) {
+    define('CF_IMAGE_RESIZING_HOME_DIR', ABSPATH);
+}
 
 /******************************************************************************/
 // Enable (TRUE) or Disable (FALSE) hooks on specific functions to alter URLs.
