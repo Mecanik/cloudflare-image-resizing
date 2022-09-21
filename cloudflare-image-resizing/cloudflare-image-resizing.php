@@ -117,7 +117,7 @@ class Utils
     {
         if (CF_IMAGE_RESIZING_STRIP_SIZES === TRUE)
         {
-            $pattern = '`((-\d+x\d+)-\d+?)(?2)|-\d+x\d+`';
+            $pattern = '`-\d+x\d+(?=\.\S+$)`';
             $image_url = @preg_replace($pattern, '$1', $image_url);
         }
         
@@ -134,8 +134,8 @@ class Utils
     	$height = 0;
 			
     	// Try extract from img url (eg: /wp-content/uploads/2020/07/project-9-1200x848.jpg)
-    	@preg_match('/(([0-9]{1,4})x([0-9]{1,4})){1}/', $image_url, $matches, PREG_OFFSET_CAPTURE, 0);
-        
+	@preg_match('/(\d+)x(\d+))(?=\.\S+$)/', $image_url, $matches, PREG_OFFSET_CAPTURE, 0);
+
 		if(isset($matches[2][0]) && isset($matches[3][0])) 
 		{
 			$width = $matches[2][0];
