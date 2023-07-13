@@ -3,6 +3,8 @@
 
  You will speed up your website drastically by offering to browsers AVIF/WEBP images delivered from global locations thanks to Cloudflare.
 
+<img src="https://i.postimg.cc/T2rTSWVL/Screenshot-2023-07-13-at-8-22-47-PM.png">
+
  Internally the plugin is developed to use the fastest functions from PHP available, without any database calls. There is zero to none overhead in performance, your website will not get slower, only faster.
 
 ## Benefits
@@ -32,6 +34,8 @@
 * Upload the plugin manually via WordPress or FTP, and enable it.
 * Set your site URL in the settings page.
 
+<img src="https://i.postimg.cc/QxmhNGnj/Screenshot-2023-07-13-at-8-21-03-PM.png">
+
 ### Notes
 * Before using this plugin please ensure **you have turned ON** the Cloudflare Image Resizing feature for your domain.
 * If your WordPress is inside a sub-folder, remember to tell the plugin this by setting the folder name.
@@ -40,7 +44,8 @@
 * You can configure whitelisting of images coming from Facebook, Twitter, Instagram, PayPal, etc.
 
 ### Tips
-* Open the developer console in your browser after enabling this plugin to test functionality. Go to "Images" tab and see if the all the downloaded images have the Cloudflare Image Resizing format.
+* Open the developer console in your browser after enabling this plugin to test functionality. Go to Network and then select "Images" tab and see if the all the downloaded images have the Cloudflare Image Resizing format.
+<img src="https://i.postimg.cc/wMhxQ1VN/console.jpg">
 * If you have filenames similar to image-100x200-100x300.jpg the plugin might not re-write it. Rename your file and re-upload it without any extra sizes in the filename.
 
 ### Contribution
