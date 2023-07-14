@@ -55,6 +55,10 @@
  These are the people that spent time and effort to test and help improve the plugin, as well as sponsoring development.
 
 * [Urban Change Lab](https://www.urbanchangelab.com)
+* [danmaby](https://github.com/danmaby)
+* [zerobounce](https://github.com/zerobounce)
+* [swissky](https://github.com/swissky)
+* [itsOwen](https://github.com/itsOwen)
 
 ### Assistance
  In your are in immediate need of commercial help/advice/assistance, I can offer you my assistance for a small fee.
