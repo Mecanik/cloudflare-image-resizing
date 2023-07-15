@@ -1,31 +1,16 @@
 <?php
 /**
-* Plugin Name: CloudFlare Image Resizing
-* Plugin URI: https://github.com/Mecanik/cloudflare-image-resizing/
-* Description: This plugin will replace Image URL's (including srcset) so you can use the CloudFlare Image Resizing service. As an added bonus it will also add the required width/height for all images that are missing them.
-* Version: 1.3
+* Plugin Name: CF Image Resizing
+* Plugin URI: https://wordpress.org/plugins/cf-image-resizing/
+* Description: Rewrites images on the fly so you can use the [Cloudflare Image Resizing](https://blog.cloudflare.com/announcing-cloudflare-image-resizing-simplifying-optimal-image-delivery/) service.
+* Version: 1.5
 * Author: Mecanik
-* Author URI: https://github.com/Mecanik/
-* 
-* Copyright (c) 2022 Mecanik
-* 
-* Permission is hereby granted, free of charge, to any person obtaining a copy
-* of this software and associated documentation files (the "Software"), to deal
-* in the Software without restriction, including without limitation the rights
-* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-* copies of the Software, and to permit persons to whom the Software is
-* furnished to do so, subject to the following conditions:
-* 
-* The above copyright notice and this permission notice shall be included in all
-* copies or substantial portions of the Software.
-* 
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-* SOFTWARE.
+* Author URI: https://github.com/Mecanik/cloudflare-image-resizing/
+* License:      GPLv3 or later
+* Text Domain:  cf-image-resizing
+* Domain Path:       /languages
+* Requires at least: 5.0
+* Requires PHP: 7.0
 **/
 
 // Exit if accessed directly
@@ -35,7 +20,7 @@ if (!defined('ABSPATH')) {
 
 require_once('config.php');
 
-define('CF_IMAGE_RESIZING_VERSION', '1.3');
+define('CF_IMAGE_RESIZING_VERSION', '1.5');
 
 // Utilities class
 class Utils
@@ -99,12 +84,12 @@ class Utils
 
         // fallback
         $parsed_url = wp_parse_url($url);
-
-        // Check if image host is external. If so, then don't strip the root url from the path
-        $host = rtrim(str_replace(['http://', 'https://', ], '', CF_IMAGE_RESIZING_SITE_URL), '/');
-        if (isset($parsed_url['host']) && $parsed_url['host'] != $host) {
-            $parsed_url['path'] = '/'.$parsed_url['scheme'].'://'.$parsed_url['host'].$parsed_url['path'];
-        }  
+        
+		// Check if image host is external. If so, then don't strip the root url from the path	
+        $host = rtrim(str_replace(['http://', 'https://', ], '', CF_IMAGE_RESIZING_SITE_URL), '/');	
+        if (isset($parsed_url['host']) && $parsed_url['host'] != $host) {	
+            $parsed_url['path'] = '/'.$parsed_url['scheme'].'://'.$parsed_url['host'].$parsed_url['path'];	
+        }
 		
         return (isset($parsed_url['path']) && $parsed_url['path'] !== '') ? $parsed_url['path'] : '';
     }
@@ -163,7 +148,7 @@ class Utils
 }
 
 // Actual plugin core
-class CloudflareImageResizingHooks
+class CFImageResizingHooks
 {
     public static function hook_get_attachment_image_src($image, $attachment_id, $size, $icon)
     {
@@ -558,7 +543,7 @@ class CloudflareImageResizingHooks
 }
 
 // Piece of code taken from the original Cloudflare plugin but adapted to our needs
-class CloudflareImageResizing
+class CFImageResizing
 {
     private static $initiated = false;
 
@@ -576,40 +561,40 @@ class CloudflareImageResizing
 
         if (CF_IMAGE_RESIZING_HOOK_1 === TRUE)
             add_filter('wp_get_attachment_image_src', [ 
-                CloudflareImageResizingHooks::class, 'hook_get_attachment_image_src'
+                CFImageResizingHooks::class, 'hook_get_attachment_image_src'
             ], PHP_INT_MAX, 4);
         
         if (CF_IMAGE_RESIZING_HOOK_2 === TRUE)
             add_filter('wp_calculate_image_srcset', [ 
-                CloudflareImageResizingHooks::class, 'hook_calculate_image_srcset'
+                CFImageResizingHooks::class, 'hook_calculate_image_srcset'
             ], PHP_INT_MAX, 4);
         
         if (CF_IMAGE_RESIZING_HOOK_3 === TRUE)
             add_filter('wp_get_attachment_url', [ 
-                CloudflareImageResizingHooks::class, 'hook_get_attachment_url' 
+                CFImageResizingHooks::class, 'hook_get_attachment_url' 
             ], PHP_INT_MAX, 2);
         
         if (CF_IMAGE_RESIZING_HOOK_4 === TRUE)
             add_filter('attribute_escape', [ 
-                CloudflareImageResizingHooks::class, 'hook_attribute_escape'
+                CFImageResizingHooks::class, 'hook_attribute_escape'
             ], PHP_INT_MAX, 2); 
         
         if (CF_IMAGE_RESIZING_HOOK_5 === TRUE)
             add_filter('clean_url', [ 
-                CloudflareImageResizingHooks::class, 'hook_clean_url'
+                CFImageResizingHooks::class, 'hook_clean_url'
             ], PHP_INT_MAX, 3);
         
         if (CF_IMAGE_RESIZING_HOOK_6 === TRUE)
             add_filter('the_content', [
-                CloudflareImageResizingHooks::class, 'hook_content_filter'
+                CFImageResizingHooks::class, 'hook_content_filter'
             ], PHP_INT_MAX, 1);
     }
     
     public static function initSettings()
     {
-        add_action('admin_init', [ CloudflareImageResizing::class, 'register_settings' ]);
-        add_action('rest_api_init', [ CloudflareImageResizing::class, 'register_settings' ]);
-        add_filter('rest_pre_dispatch', [ CloudflareImageResizing::class, 'hook_rest_pre_dispatch' ], PHP_INT_MAX, 3);
+        add_action('admin_init', [ CFImageResizing::class, 'register_settings' ]);
+        add_action('rest_api_init', [ CFImageResizing::class, 'register_settings' ]);
+        add_filter('rest_pre_dispatch', [ CFImageResizing::class, 'hook_rest_pre_dispatch' ], PHP_INT_MAX, 3);
     }
     
     public static function hook_rest_pre_dispatch($result, $server, $request) 
@@ -639,7 +624,7 @@ class CloudflareImageResizing
             $siteurl = @rtrim($siteurl, '/');
             $request['cf_image_resizing_siteurl'] = $siteurl;
                 
-            $config_file = WP_PLUGIN_DIR.'/cloudflare-image-resizing/config.php';
+            $config_file = WP_PLUGIN_DIR.'/cf-image-resizing/config.php';
             
             $file_content = file_get_contents($config_file);
     
@@ -678,7 +663,7 @@ class CFImageResizingSettings
 	public function cf_image_resizing_settings_add_plugin_page() 
 	{
 		$page_hook_suffix = add_options_page(
-			__('Cloudflare Image Resizing', 'textdomain' ), // page_title
+			__('CF Image Resizing', 'textdomain' ), // page_title
 			__('CF Image Resizing', 'textdomain' ), // menu_title
 			'manage_options', // capability
 			'cf-image-resizing-settings', // menu_slug
@@ -712,7 +697,7 @@ class CFImageResizingSettings
 // Run plugin for non-Administrators
 if (!is_admin()) 
 {
-    CloudflareImageResizing::loaded();
+    CFImageResizing::loaded();
 }
 	
 // Only available for Administrators
@@ -722,7 +707,7 @@ if (is_admin())
     new CFImageResizingSettings();
 
     // Add Shortcut to settings page
-    function cloudflare_image_resizing_shortcut($links) 
+    function cf_image_resizing_shortcut($links) 
     {
         $url = get_admin_url() . "options-general.php?page=cf-image-resizing-settings";
         $settings_link = '<a href="' . $url . '">' . __('Settings', 'textdomain') . '</a>';
@@ -730,9 +715,9 @@ if (is_admin())
         return $links;
     }
     
-    add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'cloudflare_image_resizing_shortcut');
+    add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'cf_image_resizing_shortcut');
   
-    function cloudflare_image_resizing_admin_notice()
+    function cf_image_resizing_admin_notice()
     {
         echo '<div class="notice notice-info is-dismissible">
               <p>Woop Woop! You are one step close to make your WordPress blazing fast. Don\'t forget to set your <strong>site url</strong> otherwise the plugin will not work.</p>
@@ -741,12 +726,12 @@ if (is_admin())
     }
 
     if(empty(CF_IMAGE_RESIZING_SITE_URL))
-        add_action('admin_notices', 'cloudflare_image_resizing_admin_notice');
+        add_action('admin_notices', 'cf_image_resizing_admin_notice');
  
     /**
      * Activation hook.
      */
-    function cloudflare_image_resizing_activate() 
+    function cf_image_resizing_activate() 
     {
         // Piece of code taken from the original Cloudflare plugin
         if (version_compare(PHP_VERSION, '7.0', '<')) 
@@ -755,59 +740,59 @@ if (is_admin())
             require_once ABSPATH . 'wp-admin/includes/plugin.php';
         
             deactivate_plugins(plugin_basename(__FILE__), true);
-            wp_die('<p>The Cloudflare Image Resizing plugin requires a PHP version of at least 7.0; you have '. PHP_VERSION .'.</p>', 'Plugin Activation Error', array('response' => 200, 'back_link' => true));
+            wp_die('<p>The CF Image Resizing plugin requires a PHP version of at least 7.0; you have '. PHP_VERSION .'.</p>', 'Plugin Activation Error', array('response' => 200, 'back_link' => true));
         }
         
         return true;
     }
   
-    register_activation_hook(__FILE__, 'cloudflare_image_resizing_activate');
+    register_activation_hook(__FILE__, 'cf_image_resizing_activate');
     
     /**
      * Deactivation hook.
      */
-    function cloudflare_image_resizing_deactivate() 
+    function cf_image_resizing_deactivate() 
     {
         // Remove plugin actions/filters
-        remove_action('admin_init', [ CloudflareImageResizing::class, 'register_settings' ]);
-        remove_action('rest_api_init', [ CloudflareImageResizing::class, 'register_settings' ]);
-        remove_filter('rest_pre_dispatch', [ CloudflareImageResizing::class, 'hook_rest_pre_dispatch' ]);
+        remove_action('admin_init', [ CFImageResizing::class, 'register_settings' ]);
+        remove_action('rest_api_init', [ CFImageResizing::class, 'register_settings' ]);
+        remove_filter('rest_pre_dispatch', [ CFImageResizing::class, 'hook_rest_pre_dispatch' ]);
         
         // Remove Settings Page
-        remove_filter('plugin_action_links_' . plugin_basename(__FILE__), 'cloudflare_image_resizing_shortcut');	
+        remove_filter('plugin_action_links_' . plugin_basename(__FILE__), 'cf_image_resizing_shortcut');	
         
         // Remove plugin filters
         if (CF_IMAGE_RESIZING_HOOK_1 === TRUE)
             remove_filter('wp_get_attachment_image_src', [
-                CloudflareImageResizingHooks::class, 'hook_single_img' 
+                CFImageResizingHooks::class, 'hook_single_img' 
             ], PHP_INT_MAX);
         
         if (CF_IMAGE_RESIZING_HOOK_2 === TRUE)
             remove_filter('wp_calculate_image_srcset', [ 
-                CloudflareImageResizingHooks::class, 'hook_srcset' 
+                CFImageResizingHooks::class, 'hook_srcset' 
             ], PHP_INT_MAX);
         
         if (CF_IMAGE_RESIZING_HOOK_3 === TRUE)  
             remove_filter('wp_get_attachment_url', [ 
-                CloudflareImageResizingHooks::class, 'hook_get_attachment_url' 
+                CFImageResizingHooks::class, 'hook_get_attachment_url' 
             ], PHP_INT_MAX);
         
         if (CF_IMAGE_RESIZING_HOOK_4 === TRUE)
             remove_filter('attribute_escape', [ 
-                CloudflareImageResizingHooks::class, 'hook_attribute_escape' 
+                CFImageResizingHooks::class, 'hook_attribute_escape' 
             ], PHP_INT_MAX);
         
         if (CF_IMAGE_RESIZING_HOOK_5 === TRUE)   
             remove_filter('clean_url', [ 
-                CloudflareImageResizingHooks::class, 'hook_clean_url' 
+                CFImageResizingHooks::class, 'hook_clean_url' 
             ], PHP_INT_MAX);
         
         if (CF_IMAGE_RESIZING_HOOK_6 === TRUE)    
             remove_filter('the_content', [ 
-                CloudflareImageResizingHooks::class, 
+                CFImageResizingHooks::class, 
                 'hook_img_size' 
             ], PHP_INT_MAX);
     }
     
-    register_deactivation_hook(__FILE__, 'cloudflare_image_resizing_deactivate');
+    register_deactivation_hook(__FILE__, 'cf_image_resizing_deactivate');
 }
