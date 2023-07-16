@@ -4,7 +4,7 @@ Donate link: https://github.com/sponsors/Mecanik
 Tags: image, image-optimization, image-resizing, cloudflare images, optimizer, optimize, cloudflare, cloudflare-image-resizing, resize-images, performance, pagespeed, core web vitals, seo, speed, smush, jpg, png, gif, compression, compress, images, pictures, reduce-image-size, image-optimize
 Requires at least: 5.0
 Tested up to: 6.2.2
-Stable tag: 1.5
+Stable tag: 1.5.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -132,26 +132,31 @@ Yes, this plugin optimizes and resizes your images on-the-fly. As soon as an ima
 = Will this plugin help improve my Google Page Insights score? =
 Absolutely. By optimizing your images and speeding up your website, this plugin can help to improve your Google Page Insights score. The quicker your site loads, the better your user experience and the higher your potential score.
 
-= Can I manually set my website URL and folder? =
-Yes, you can. In the config.php file, you have two definitions for this: CF_IMAGE_RESIZING_SITE_URL and CF_IMAGE_RESIZING_SITE_FOLDER. You must set your website URL in CF_IMAGE_RESIZING_SITE_URL (without a trailing slash (/)), and if your website is in a sub-folder, you should specify it in CF_IMAGE_RESIZING_SITE_FOLDER.
-
-= How do I control which functions the plugin hooks onto? =
-In the config.php file, there are several hook definitions (like CF_IMAGE_RESIZING_HOOK_1). These allow the plugin to work with specific functions. By default, some are set to TRUE, and others to FALSE. Set to TRUE to enable the hook, or to FALSE to disable it. The provided comments explain the hooks' individual roles.
-
 = How do I configure the Cloudflare Image Resizing options? =
-The config.php file allows you to configure the Cloudflare Image Resizing options (like CF_IMAGE_RESIZING_FIT, CF_IMAGE_RESIZING_QUALITY, etc.) The comments in the file provide recommended values and explain each option's role.
+Please visit the settings page. Each option is explained in detail for easy understanding.
 
 = Can I enable extra options for image resizing? =
-Yes, you can. The config.php file contains several extra options (like CF_IMAGE_RESIZING_STRIP_SIZES, CF_IMAGE_RESIZING_ADD_MISSING_SIZES, etc.). You can enable (set to TRUE) or disable (set to FALSE) these options as needed. Each option is explained in detail in the file's comments.
+Please visit the settings page. Each option is explained in detail for easy understanding.
 
 = Can I exclude specific image sources from Cloudflare Image Resizing? =
-Yes, you can. If CF_IMAGE_RESIZING_WHITELIST is set to TRUE, the plugin will bypass images coming from the domains listed in CF_IMAGE_RESIZING_WHITELIST_URLS. This is useful for excluding images from sites like Facebook, Twitter, etc.
+Yes, you can. However you need to edit manually the config.php as of this writing. If CF_IMAGE_RESIZING_WHITELIST is set to TRUE, the plugin will bypass images coming from the domains listed in CF_IMAGE_RESIZING_WHITELIST_URLS. This is useful for excluding images from sites like Facebook, Twitter, etc.
 
 == Screenshots ==
 1. Example resized image savings
 2. Example plugin setup
 
 == Changelog ==
+
+##### Version 1.5.2
+
+- Fixed Spelling
+
+##### Version 1.5.1
+
+- Automatic configuration on new install
+- New settings page
+- Bugfixes and improvements
+- SVG support (sanitize SVGs, but not resize them)
 
 ##### Version 1.5
 

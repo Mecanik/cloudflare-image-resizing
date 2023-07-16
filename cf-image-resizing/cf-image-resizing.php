@@ -1,14 +1,14 @@
 <?php
 /**
-* Plugin Name: CF Image Resizing
+* Plugin Name: Cloudflare Image Resizing
 * Plugin URI: https://wordpress.org/plugins/cf-image-resizing/
-* Description: Rewrites images on the fly so you can use the [Cloudflare Image Resizing](https://blog.cloudflare.com/announcing-cloudflare-image-resizing-simplifying-optimal-image-delivery/) service.
-* Version: 1.5
+* Description: Optimize images on-the-fly using Cloudflare's Image Resizing service, improving performance and core web vitals.
+* Version: 1.5.2
 * Author: Mecanik
-* Author URI: https://github.com/Mecanik/cloudflare-image-resizing/
-* License:      GPLv3 or later
-* Text Domain:  cf-image-resizing
-* Domain Path:       /languages
+* Author URI: https://mecanik.dev/en/?utm_source=wp-plugins&utm_campaign=author-uri&utm_medium=wp-dash
+* License: GPLv3 or later
+* Text Domain: cf-image-resizing
+* Domain Path: /languages
 * Requires at least: 5.0
 * Requires PHP: 7.0
 **/
@@ -20,18 +20,19 @@ if (!defined('ABSPATH')) {
 
 require_once('config.php');
 
-define('CF_IMAGE_RESIZING_VERSION', '1.5');
+define('CF_IMAGE_RESIZING_VERSION', '1.5.2');
 
 // Utilities class
 class Utils
 {
     /* 
-     * Check if this is a valid image. JPEG, PNG, GIF (including animations), and WebP images. SVG is not supported
+     * Check if this is a valid image. JPEG, PNG, GIF (including animations), and WebP images. 
+	 * SVG support: You can use Image Resizing to sanitize SVGs, but not to resize them.
      * @return bool
      */
     public static function isValidImage($image)
     {
-    	if(@preg_match('/\.(?:jpg|jpeg|gif|png|webp)/', $image, $matches, PREG_OFFSET_CAPTURE, 0)) {
+    	if(@preg_match('/\.(?:jpe?g|gif|png|webp|svg)/', $image, $matches, PREG_OFFSET_CAPTURE, 0)) {
     		return true;
     	}
     
@@ -611,20 +612,16 @@ class CFImageResizing
             return $result;
         }
         
+        $config_file = WP_PLUGIN_DIR.'/cf-image-resizing/config.php';
+        
         $siteurl = @isset($request['cf_image_resizing_siteurl']) ? $request['cf_image_resizing_siteurl'] : null;
     
         // We don't care about anything else
-        if (null === $siteurl) 
-        {
-            return $result;
-        }
-        else
+        if (null !== $siteurl)
         {
             // Sorry... I don't trust you!
             $siteurl = @rtrim($siteurl, '/');
             $request['cf_image_resizing_siteurl'] = $siteurl;
-                
-            $config_file = WP_PLUGIN_DIR.'/cf-image-resizing/config.php';
             
             $file_content = file_get_contents($config_file);
     
@@ -636,13 +633,201 @@ class CFImageResizing
             file_put_contents($config_file, $file_content);
         }
     
+        $hook_1 = @isset($request['cf_image_resizing_hook_1']) ? $request['cf_image_resizing_hook_1'] : null;
+          
+        if (null !== $hook_1)
+        {
+            $enabled = $hook_1 ? 'TRUE' : 'FALSE';
+            
+            $file_content = file_get_contents($config_file);
+    
+            $file_content = preg_replace("/(define\(\'CF_IMAGE_RESIZING_HOOK_1\'\,\s)(.*)(\)\;)/", "$1$enabled$3", $file_content);
+        
+            file_put_contents($config_file, $file_content);
+        }
+        
+		$hook_2 = @isset($request['cf_image_resizing_hook_2']) ? $request['cf_image_resizing_hook_2'] : null;
+          
+        if (null !== $hook_2)
+        {
+            $enabled = $hook_2 ? 'TRUE' : 'FALSE';
+            
+            $file_content = file_get_contents($config_file);
+    
+            $file_content = preg_replace("/(define\(\'CF_IMAGE_RESIZING_HOOK_2\'\,\s)(.*)(\)\;)/", "$1$enabled$3", $file_content);
+        
+            file_put_contents($config_file, $file_content);
+        }
+		
+		$hook_3 = @isset($request['cf_image_resizing_hook_3']) ? $request['cf_image_resizing_hook_3'] : null;
+          
+        if (null !== $hook_3)
+        {
+            $enabled = $hook_3 ? 'TRUE' : 'FALSE';
+            
+            $file_content = file_get_contents($config_file);
+    
+            $file_content = preg_replace("/(define\(\'CF_IMAGE_RESIZING_HOOK_3\'\,\s)(.*)(\)\;)/", "$1$enabled$3", $file_content);
+        
+            file_put_contents($config_file, $file_content);
+        }
+		
+		$hook_4 = @isset($request['cf_image_resizing_hook_4']) ? $request['cf_image_resizing_hook_4'] : null;
+          
+        if (null !== $hook_4)
+        {
+            $enabled = $hook_4 ? 'TRUE' : 'FALSE';
+            
+            $file_content = file_get_contents($config_file);
+    
+            $file_content = preg_replace("/(define\(\'CF_IMAGE_RESIZING_HOOK_4\'\,\s)(.*)(\)\;)/", "$1$enabled$3", $file_content);
+        
+            file_put_contents($config_file, $file_content);
+        }
+		
+		$hook_5 = @isset($request['cf_image_resizing_hook_5']) ? $request['cf_image_resizing_hook_5'] : null;
+          
+        if (null !== $hook_5)
+        {
+            $enabled = $hook_5 ? 'TRUE' : 'FALSE';
+            
+            $file_content = file_get_contents($config_file);
+    
+            $file_content = preg_replace("/(define\(\'CF_IMAGE_RESIZING_HOOK_5\'\,\s)(.*)(\)\;)/", "$1$enabled$3", $file_content);
+        
+            file_put_contents($config_file, $file_content);
+        }
+		
+		$hook_6 = @isset($request['cf_image_resizing_hook_6']) ? $request['cf_image_resizing_hook_6'] : null;
+          
+        if (null !== $hook_6)
+        {
+            $enabled = $hook_6 ? 'TRUE' : 'FALSE';
+            
+            $file_content = file_get_contents($config_file);
+    
+            $file_content = preg_replace("/(define\(\'CF_IMAGE_RESIZING_HOOK_6\'\,\s)(.*)(\)\;)/", "$1$enabled$3", $file_content);
+        
+            file_put_contents($config_file, $file_content);
+        }
+		
+		$fit = @isset($request['cf_image_resizing_fit']) ? $request['cf_image_resizing_fit'] : null;
+          
+        if (null !== $fit)
+        {
+            $file_content = file_get_contents($config_file);
+    
+            $file_content = preg_replace("/(define\(\'CF_IMAGE_RESIZING_FIT\'\,\s\')(.*)(\'\)\;)/", "$1$fit$3", $file_content);
+        
+            file_put_contents($config_file, $file_content);
+        }
+		
+		$quality = @isset($request['cf_image_resizing_quality']) ? $request['cf_image_resizing_quality'] : null;
+
+		if (null !== $quality)
+		{
+			$file_content = file_get_contents($config_file);
+
+			$file_content = preg_replace("/(define\(\'CF_IMAGE_RESIZING_QUALITY\'\,\s)(\d+)(\)\;)/", '${1}' . (string)$quality . '${3}', $file_content);
+
+			file_put_contents($config_file, $file_content);
+		}
+		
+		$format = @isset($request['cf_image_resizing_format']) ? $request['cf_image_resizing_format'] : null;
+          
+        if (null !== $format)
+        {
+            $file_content = file_get_contents($config_file);
+    
+            $file_content = preg_replace("/(define\(\'CF_IMAGE_RESIZING_FORMAT\'\,\s\')(.*)(\'\)\;)/", "$1$format$3", $file_content);
+        
+            file_put_contents($config_file, $file_content);
+        }
+		
+		$metadata = @isset($request['cf_image_resizing_metadata']) ? $request['cf_image_resizing_metadata'] : null;
+          
+        if (null !== $metadata)
+        {
+            $file_content = file_get_contents($config_file);
+    
+            $file_content = preg_replace("/(define\(\'CF_IMAGE_RESIZING_METADATA\'\,\s\')(.*)(\'\)\;)/", "$1$metadata$3", $file_content);
+        
+            file_put_contents($config_file, $file_content);
+        }
+		
+		$onerror = @isset($request['cf_image_resizing_onerror']) ? $request['cf_image_resizing_onerror'] : null;
+          
+        if (null !== $onerror)
+        {
+            $file_content = file_get_contents($config_file);
+    
+            $file_content = preg_replace("/(define\(\'CF_IMAGE_RESIZING_ONERROR\'\,\s\')(.*)(\'\)\;)/", "$1$onerror$3", $file_content);
+        
+            file_put_contents($config_file, $file_content);
+        }
+		
+		$strip_img_sizes = @isset($request['cf_image_resizing_strip_img_sizes']) ? $request['cf_image_resizing_strip_img_sizes'] : null;
+          
+        if (null !== $strip_img_sizes)
+        {
+            $enabled = $strip_img_sizes ? 'TRUE' : 'FALSE';
+            
+            $file_content = file_get_contents($config_file);
+    
+            $file_content = preg_replace("/(define\(\'CF_IMAGE_RESIZING_STRIP_SIZES\'\,\s)(.*)(\)\;)/", "$1$enabled$3", $file_content);
+        
+            file_put_contents($config_file, $file_content);
+        }
+		
+		$add_img_sizes = @isset($request['cf_image_resizing_add_img_sizes']) ? $request['cf_image_resizing_add_img_sizes'] : null;
+          
+        if (null !== $add_img_sizes)
+        {
+            $enabled = $add_img_sizes ? 'TRUE' : 'FALSE';
+            
+            $file_content = file_get_contents($config_file);
+    
+            $file_content = preg_replace("/(define\(\'CF_IMAGE_RESIZING_ADD_MISSING_SIZES\'\,\s)(.*)(\)\;)/", "$1$enabled$3", $file_content);
+        
+            file_put_contents($config_file, $file_content);
+        }
+		
+		$fix_vc_composer = @isset($request['cf_image_resizing_fix_vc_composer']) ? $request['cf_image_resizing_fix_vc_composer'] : null;
+          
+        if (null !== $fix_vc_composer)
+        {
+            $enabled = $fix_vc_composer ? 'TRUE' : 'FALSE';
+            
+            $file_content = file_get_contents($config_file);
+    
+            $file_content = preg_replace("/(define\(\'CF_IMAGE_RESIZING_FIX_VC_COMPOSER\'\,\s)(.*)(\)\;)/", "$1$enabled$3", $file_content);
+        
+            file_put_contents($config_file, $file_content);
+        }
+		
         return $result;
     }
 
     public static function register_settings() 
     {
-    	register_setting('cf-image-resizing-settings', 'cf_image_resizing_siteurl', [ 'show_in_rest' => true, 'type' => 'string', 'default' => get_option('cf_image_resizing_siteurl', ''), ] );
-    }
+    	register_setting('cf-image-resizing-settings', 'cf_image_resizing_siteurl', [ 'show_in_rest' => true, 'type' => 'string', 'default' => get_option('cf_image_resizing_siteurl', rtrim(home_url(), '/')), ] );
+		register_setting('cf-image-resizing-settings', 'cf_image_resizing_sitefolder', [ 'show_in_rest' => true, 'type' => 'string', 'default' => get_option('cf_image_resizing_sitefolder', ''), ] );
+		register_setting('cf-image-resizing-settings', 'cf_image_resizing_homedir', [ 'show_in_rest' => true, 'type' => 'string', 'default' => get_option('cf_image_resizing_homedir', ABSPATH), ] );
+    	register_setting('cf-image-resizing-settings', 'cf_image_resizing_hook_1', [ 'show_in_rest' => true, 'type' => 'boolean', 'default' => get_option('cf_image_resizing_hook_1', true), ] );
+		register_setting('cf-image-resizing-settings', 'cf_image_resizing_hook_2', [ 'show_in_rest' => true, 'type' => 'boolean', 'default' => get_option('cf_image_resizing_hook_2', true), ] );
+		register_setting('cf-image-resizing-settings', 'cf_image_resizing_hook_3', [ 'show_in_rest' => true, 'type' => 'boolean', 'default' => get_option('cf_image_resizing_hook_3', false), ] );
+		register_setting('cf-image-resizing-settings', 'cf_image_resizing_hook_4', [ 'show_in_rest' => true, 'type' => 'boolean', 'default' => get_option('cf_image_resizing_hook_4', false), ] );
+		register_setting('cf-image-resizing-settings', 'cf_image_resizing_hook_5', [ 'show_in_rest' => true, 'type' => 'boolean', 'default' => get_option('cf_image_resizing_hook_5', false), ] );
+		register_setting('cf-image-resizing-settings', 'cf_image_resizing_hook_6', [ 'show_in_rest' => true, 'type' => 'boolean', 'default' => get_option('cf_image_resizing_hook_6', true), ] );
+		register_setting('cf-image-resizing-settings', 'cf_image_resizing_fit', [ 'show_in_rest' => true, 'type' => 'string', 'default' => get_option('cf_image_resizing_fit', 'crop'), ] );
+		register_setting('cf-image-resizing-settings', 'cf_image_resizing_quality', [ 'show_in_rest' => true, 'type' => 'number', 'default' => get_option('cf_image_resizing_quality', 80), ] );
+		register_setting('cf-image-resizing-settings', 'cf_image_resizing_format', [ 'show_in_rest' => true, 'type' => 'string', 'default' => get_option('cf_image_resizing_format', 'auto'), ] );
+		register_setting('cf-image-resizing-settings', 'cf_image_resizing_metadata', [ 'show_in_rest' => true, 'type' => 'string', 'default' => get_option('cf_image_resizing_metadata', 'none'), ] );
+		register_setting('cf-image-resizing-settings', 'cf_image_resizing_onerror', [ 'show_in_rest' => true, 'type' => 'string', 'default' => get_option('cf_image_resizing_onerror', 'redirect'), ] );
+		register_setting('cf-image-resizing-settings', 'cf_image_resizing_strip_img_sizes', [ 'show_in_rest' => true, 'type' => 'boolean', 'default' => get_option('cf_image_resizing_strip_img_sizes', true), ] );
+		register_setting('cf-image-resizing-settings', 'cf_image_resizing_add_img_sizes', [ 'show_in_rest' => true, 'type' => 'boolean', 'default' => get_option('cf_image_resizing_add_img_sizes', true), ] );
+		register_setting('cf-image-resizing-settings', 'cf_image_resizing_fix_vc_composer', [ 'show_in_rest' => true, 'type' => 'boolean', 'default' => get_option('cf_image_resizing_fix_vc_composer', false), ] );
+	}
 }
 
 // Admin settings page
@@ -663,8 +848,8 @@ class CFImageResizingSettings
 	public function cf_image_resizing_settings_add_plugin_page() 
 	{
 		$page_hook_suffix = add_options_page(
-			__('CF Image Resizing', 'textdomain' ), // page_title
-			__('CF Image Resizing', 'textdomain' ), // menu_title
+			__('Cloudflare Image Resizing', 'cf-image-resizing' ), // page_title
+			__('CF Image Resizing', 'cf-image-resizing' ), // menu_title
 			'manage_options', // capability
 			'cf-image-resizing-settings', // menu_slug
 			[ $this, 'cf_image_resizing_settings_create_admin_page' ] // function
@@ -710,23 +895,71 @@ if (is_admin())
     function cf_image_resizing_shortcut($links) 
     {
         $url = get_admin_url() . "options-general.php?page=cf-image-resizing-settings";
-        $settings_link = '<a href="' . $url . '">' . __('Settings', 'textdomain') . '</a>';
+        $settings_link = '<a href="' . $url . '">' . __('Settings', 'cf-image-resizing') . '</a>';
         $links[] = $settings_link;
         return $links;
     }
     
     add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'cf_image_resizing_shortcut');
   
-    function cf_image_resizing_admin_notice()
-    {
-        echo '<div class="notice notice-info is-dismissible">
-              <p>Woop Woop! You are one step close to make your WordPress blazing fast. Don\'t forget to set your <strong>site url</strong> otherwise the plugin will not work.</p>
-              <p><strong>You can edit settings and options (CF_IMAGE_RESIZING_SITE_URL) by <a href='.get_admin_url().'options-general.php?page=cf-image-resizing-settings>'. __('clicking here', 'textdomain') .'</a>.</strong></p>
-            </div>';
-    }
+	function cf_image_resizing_admin_notice()
+	{
+		global $current_screen;
 
-    if(empty(CF_IMAGE_RESIZING_SITE_URL))
-        add_action('admin_notices', 'cf_image_resizing_admin_notice');
+		if ($current_screen->id !== 'settings_page_cf-image-resizing-settings') 
+		{
+			if (get_option('cf_image_resizing_admin_notice_dismissed', 'no') == 'no') 
+			{
+				$message = __("I'm glad you're using my plugin! If you find it helpful, could you please take a moment to leave a review? I'd really appreciate it. Thank you! - Mecanik", 'cf-image-resizing');
+				$leaveReviewLink = 'https://wordpress.org/support/plugin/cf-image-resizing/reviews/#new-post';
+
+				$html = <<<HTML
+					<div class="notice notice-success is-dismissible cf-image-resizing-review-notice" style="padding: 15px;">
+						<h2 style="margin-top: 0px !important; margin-bottom: 10px !important;">Thanks for using Cloudflare Image Resizing</h2>
+						<p>$message</p>
+						<a href="$leaveReviewLink" class="button button-primary" target="_blank"><span class="dashicons dashicons-star-filled" style="margin-top: 3px;"></span> Leave a review</a>
+						<button type="button" class="notice-dismiss" id="cf-image-resizing-notice-dismiss"><span class="screen-reader-text">Already left a review</span></button>
+					</div>
+					<script type='text/javascript'>
+						document.addEventListener('DOMContentLoaded', function() {
+							document.querySelector('#cf-image-resizing-notice-dismiss').addEventListener('click', function() {
+								var xhr = new XMLHttpRequest();
+								xhr.open('POST', ajaxurl, true);
+								xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+								xhr.onload = function() {
+									if (this.status >= 200 && this.status < 400) {
+										// Success!
+										console.log(this.response);
+										document.querySelector('.cf-image-resizing-review-notice').style.display = 'none';
+									} else {
+										// Error :(
+										console.error('XHR error');
+									}
+								};
+								xhr.onerror = function() {
+									// Connection error
+									console.error('XHR connection error');
+								};
+								xhr.send('action=dismiss_cf_image_resizing_admin_notice');
+							});
+						});
+					</script>
+				HTML;
+
+				echo $html;
+			}
+		}
+	}
+
+    add_action('admin_notices', 'cf_image_resizing_admin_notice');
+ 
+	function dismiss_cf_image_resizing_admin_notice() 
+	{
+		update_option('cf_image_resizing_admin_notice_dismissed', 'yes');
+		wp_die();
+	}
+
+	add_action('wp_ajax_dismiss_cf_image_resizing_admin_notice', 'dismiss_cf_image_resizing_admin_notice');
  
     /**
      * Activation hook.
@@ -742,7 +975,27 @@ if (is_admin())
             deactivate_plugins(plugin_basename(__FILE__), true);
             wp_die('<p>The CF Image Resizing plugin requires a PHP version of at least 7.0; you have '. PHP_VERSION .'.</p>', 'Plugin Activation Error', array('response' => 200, 'back_link' => true));
         }
-        
+		
+		// Set default options
+		update_option('cf_image_resizing_siteurl', rtrim(home_url(), '/'));
+		update_option('cf_image_resizing_sitefolder', '');
+		update_option('cf_image_resizing_homedir', ABSPATH);
+		update_option('cf_image_resizing_hook_1', true);
+		update_option('cf_image_resizing_hook_2', true);
+		update_option('cf_image_resizing_hook_3', false);
+		update_option('cf_image_resizing_hook_4', false);
+		update_option('cf_image_resizing_hook_5', false);
+		update_option('cf_image_resizing_hook_6', true);
+		update_option('cf_image_resizing_fit', 'crop');
+		update_option('cf_image_resizing_quality', 80);
+		update_option('cf_image_resizing_format', 'auto');
+		update_option('cf_image_resizing_metadata', 'none');
+		update_option('cf_image_resizing_onerror', 'redirect');
+		update_option('cf_image_resizing_strip_img_sizes', true);
+		update_option('cf_image_resizing_add_img_sizes', true);
+		update_option('cf_image_resizing_fix_vc_composer', false);
+
+		
         return true;
     }
   
@@ -789,8 +1042,7 @@ if (is_admin())
         
         if (CF_IMAGE_RESIZING_HOOK_6 === TRUE)    
             remove_filter('the_content', [ 
-                CFImageResizingHooks::class, 
-                'hook_img_size' 
+                CFImageResizingHooks::class, 'hook_content_filter' 
             ], PHP_INT_MAX);
     }
     

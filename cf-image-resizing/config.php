@@ -1,7 +1,7 @@
 <?php
 /**
 * Author: Mecanik
-* Author URI: https://github.com/Mecanik/cloudflare-image-resizing/
+* Author URI: https://mecanik.dev/en/
 * Requires at least: 5.0
 * Requires PHP: 7.0
 **/
