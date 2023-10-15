@@ -3,7 +3,7 @@
 * Plugin Name: Cloudflare Image Resizing
 * Plugin URI: https://wordpress.org/plugins/cf-image-resizing/
 * Description: Optimize images on-the-fly using Cloudflare's Image Resizing service, improving performance and core web vitals.
-* Version: 1.5.2
+* Version: 1.5.3
 * Author: Mecanik
 * Author URI: https://mecanik.dev/en/?utm_source=wp-plugins&utm_campaign=author-uri&utm_medium=wp-dash
 * License: GPLv3 or later
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 
 require_once('config.php');
 
-define('CF_IMAGE_RESIZING_VERSION', '1.5.2');
+define('CF_IMAGE_RESIZING_VERSION', '1.5.3');
 
 // Utilities class
 class Utils
@@ -145,6 +145,85 @@ class Utils
         echo '<pre style="text-align: left;white-space: pre-line;background-color: #444;background-image: -webkit-linear-gradient(#444 50%, #505050 50%);background-image: -moz-linear-gradient(#444 50%, #505050 50%);background-image: -ms-linear-gradient(#444 50%, #505050 50%);background-image: -o-linear-gradient(#444 50%, #505050 50%);background-image: linear-gradient(#444 50%, #505050 50%);background-position: 0 1px;background-repeat: repeat;background-size: 48px 48px; border-radius: 5px;color: #f6f6f6;line-height: 24px;padding: 24px;"><strong style="color:#fff700">'.$function.'</strong>:<br/>';
         var_dump($content);
         echo '</pre>';
+    }
+	
+	public static function get_region($account, $token)
+    {
+        $api_url = "https://api.mecanik.dev/v1/developer/$account/geo-info";
+    
+        $response = wp_remote_post($api_url, [
+            'headers' => [
+                'Authorization' => 'Bearer '.$token,
+                'Content-Type' => 'application/json; charset=utf-8',
+            ],
+            'method' => 'GET',
+        ]);
+    
+        $response_body = wp_remote_retrieve_body($response);
+        $response_data = json_decode($response_body, true);
+		
+        return $response_data['result'];
+    }
+    
+    public static function get_wp_version() {
+        global $wp_version;
+        return $wp_version;
+    }
+
+    public static function get_php_version() {
+        return PHP_VERSION;
+    }
+    
+    public static function get_db_type() {
+        global $wpdb;
+    
+        // Query the information_schema database to retrieve the database type
+        $query = "SELECT TABLE_SCHEMA FROM information_schema.TABLES WHERE TABLE_NAME = 'wp_options'";
+        $result = $wpdb->get_row($query);
+    
+        // Check if the query was successful and if a result was obtained
+        if ($result && isset($result->TABLE_SCHEMA)) {
+            $table_schema = $result->TABLE_SCHEMA;
+    
+            // Determine the database type based on the table schema
+            if (strpos($table_schema, 'mysql') !== false) {
+                return 'MySQL';
+            } elseif (strpos($table_schema, 'pgsql') !== false) {
+                return 'PostgreSQL';
+            } elseif (strpos($table_schema, 'sqlite') !== false) {
+                return 'SQLite';
+            }
+        }
+    
+        return 'Unknown';
+    }
+    
+    public static function get_db_version() {
+        global $wpdb;
+        return $wpdb->db_version();
+    }
+
+    public static function get_server_type() {
+        if (isset($_SERVER['SERVER_SOFTWARE'])) {
+            return explode(' ', $_SERVER['SERVER_SOFTWARE'])[0];
+        }
+        return 'Unknown';
+    }
+
+    public static function get_server_version() {
+        $uname = php_uname('s');
+
+        $serverTypes = [
+            'Apache' => 'Apache',
+            'Nginx' => 'Nginx',
+            'LiteSpeed' => 'LiteSpeed'
+        ];
+    
+        if (isset($serverTypes[$uname])) {
+            return $serverTypes[$uname];
+        }
+
+        return '0.0.0';
     }
 }
 
@@ -896,58 +975,64 @@ if (is_admin())
     {
         $url = get_admin_url() . "options-general.php?page=cf-image-resizing-settings";
         $settings_link = '<a href="' . $url . '">' . __('Settings', 'cf-image-resizing') . '</a>';
-        $links[] = $settings_link;
+        array_unshift($links, $settings_link);
         return $links;
     }
     
     add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'cf_image_resizing_shortcut');
-  
+
+	// Add Review notice
 	function cf_image_resizing_admin_notice()
 	{
-		global $current_screen;
+		$screen = get_current_screen();
 
-		if ($current_screen->id !== 'settings_page_cf-image-resizing-settings') 
+        if (null === $screen) {
+            return;
+        }
+        
+        if ($screen->id === "settings_page_cf-image-resizing-settings") {
+            return;
+        }
+		
+		if (get_option('cf_image_resizing_admin_notice_dismissed', 'no') == 'no') 
 		{
-			if (get_option('cf_image_resizing_admin_notice_dismissed', 'no') == 'no') 
-			{
-				$message = __("I'm glad you're using my plugin! If you find it helpful, could you please take a moment to leave a review? I'd really appreciate it. Thank you! - Mecanik", 'cf-image-resizing');
-				$leaveReviewLink = 'https://wordpress.org/support/plugin/cf-image-resizing/reviews/#new-post';
+			$message = __("I'm glad you're using my plugin! If you find it helpful, could you please take a moment to leave a review? I'd really appreciate it. Thank you! - Mecanik", 'cf-image-resizing');
+			$leaveReviewLink = 'https://wordpress.org/support/plugin/cf-image-resizing/reviews/#new-post';
 
-				$html = <<<HTML
-					<div class="notice notice-success is-dismissible cf-image-resizing-review-notice" style="padding: 15px;">
-						<h2 style="margin-top: 0px !important; margin-bottom: 10px !important;">Thanks for using Cloudflare Image Resizing</h2>
-						<p>$message</p>
-						<a href="$leaveReviewLink" class="button button-primary" target="_blank"><span class="dashicons dashicons-star-filled" style="margin-top: 3px;"></span> Leave a review</a>
-						<button type="button" class="notice-dismiss" id="cf-image-resizing-notice-dismiss"><span class="screen-reader-text">Already left a review</span></button>
-					</div>
-					<script type='text/javascript'>
-						document.addEventListener('DOMContentLoaded', function() {
-							document.querySelector('#cf-image-resizing-notice-dismiss').addEventListener('click', function() {
-								var xhr = new XMLHttpRequest();
-								xhr.open('POST', ajaxurl, true);
-								xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-								xhr.onload = function() {
-									if (this.status >= 200 && this.status < 400) {
-										// Success!
-										console.log(this.response);
-										document.querySelector('.cf-image-resizing-review-notice').style.display = 'none';
-									} else {
-										// Error :(
-										console.error('XHR error');
-									}
-								};
-								xhr.onerror = function() {
-									// Connection error
-									console.error('XHR connection error');
-								};
-								xhr.send('action=dismiss_cf_image_resizing_admin_notice');
-							});
+			$html = <<<HTML
+				<div class="notice notice-success is-dismissible cf-image-resizing-review-notice" style="padding: 15px;">
+					<h2 style="margin-top: 0px !important; margin-bottom: 10px !important;">Thanks for using Cloudflare Image Resizing</h2>
+					<p>$message</p>
+					<a href="$leaveReviewLink" class="button button-primary" target="_blank"><span class="dashicons dashicons-star-filled" style="margin-top: 3px;"></span> Leave a review</a>
+					<button type="button" class="notice-dismiss" id="cf-image-resizing-notice-dismiss"><span class="screen-reader-text">Already left a review</span></button>
+				</div>
+				<script type='text/javascript'>
+					document.addEventListener('DOMContentLoaded', function() {
+						document.querySelector('#cf-image-resizing-notice-dismiss').addEventListener('click', function() {
+							var xhr = new XMLHttpRequest();
+							xhr.open('POST', ajaxurl, true);
+							xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+							xhr.onload = function() {
+								if (this.status >= 200 && this.status < 400) {
+									// Success!
+									console.log(this.response);
+									document.querySelector('.cf-image-resizing-review-notice').style.display = 'none';
+								} else {
+									// Error :(
+									console.error('XHR error');
+								}
+							};
+							xhr.onerror = function() {
+								// Connection error
+								console.error('XHR connection error');
+							};
+							xhr.send('action=dismiss_cf_image_resizing_admin_notice');
 						});
-					</script>
-				HTML;
+					});
+				</script>
+			HTML;
 
-				echo $html;
-			}
+			echo $html;
 		}
 	}
 
@@ -960,7 +1045,150 @@ if (is_admin())
 	}
 
 	add_action('wp_ajax_dismiss_cf_image_resizing_admin_notice', 'dismiss_cf_image_resizing_admin_notice');
- 
+
+	// Add Feedback system
+	function cf_image_resizing_admin_feedback()
+	{
+		$screen = get_current_screen();
+
+        if (null === $screen) {
+            return;
+        }
+        
+        if ($screen->id !== "plugins") {
+            return;
+        }
+
+		$html = <<<HTML
+			<div id="cf-image-resizing-feedback-modal" class="cf-image-resizing-modal">
+				<div class="cf-image-resizing-modal-content">
+					<div class="cf-image-resizing-modal-header">
+						<h2>CF Image Resizing Deactivation Feedback</h2>
+						<button class="cf-image-resizing-modal-close" title="Close feedback form">&times;</button>
+					</div>
+					<div class="cf-image-resizing-modal-body">
+						<p>I'd appreciate it if you could share your reasons for deactivating this plugin. Your feedback helps me make improvements for everyone's benefit. Thank you!</p>
+						<p>
+							<label for="reason"><strong>Reason for Deactivation:</strong></label>
+							<select id="reason" name="reason" class="regular-text">
+								<option value="not-working">It's not working</option>
+								<option value="better-plugin">Found a better plugin</option>
+								<option value="temporary-deactivation">Temporary deactivation</option>
+								<option value="feature-missing">Needed feature is missing</option>
+								<option value="hard-to-use">It's too hard to use</option>
+								<option value="not-compatible">Not compatible with another plugin/theme</option>
+								<option value="performance-issues">Causing performance issues</option>
+								<option value="site-crash">Caused my site to crash</option>
+								<option value="not-updated">Plugin isn't updated regularly</option>
+								<option value="switched-theme">Switched to a theme that includes similar functionality</option>
+								<option value="support-issues">Not getting adequate support</option>
+								<option value="other">Other</option>
+							</select>
+						</p>
+						<p>
+							<label for="comments"><strong>Additional Comments:</strong></label>
+							<textarea id="comments" name="comments" rows="4" class="large-text"></textarea>
+						</p>
+						
+						<small class="cf-image-resizing-modal-text-muted">
+							By providing feedback, you're sharing specifics like the plugin name, version, and some of your environment details (WordPress info, PHP, database, and server). This data aids in diagnosing and enhancing the plugin. Rest assured, no personal information is gathered or disseminated to third parties.
+						</small>
+						
+						<div id="feedback-error" class="cf-image-resizing-feedback-error" style="display: none;"></div>
+						
+					</div>
+					<div class="cf-image-resizing-modal-footer">
+						<button class="cf-image-resizing-modal-submit button button-primary">Submit and Deactivate</button>
+						<button class="cf-image-resizing-modal-skip button">Skip and Deactivate</button>
+					</div>
+				</div>
+			</div>
+		HTML;
+
+		echo $html;
+	}
+	
+	add_action('admin_footer', 'cf_image_resizing_admin_feedback');
+	
+	function send_cf_image_resizing_admin_feedback() 
+	{
+		if (!wp_verify_nonce($_POST['nonce'], 'cf_image_resizing_admin_feedback_nonce')) {
+            wp_send_json_error('Request is invalid. Please refresh the page and try again.', 400, 0);
+            exit();
+        }
+        
+        $account = "af87c346-67e8-4c94-a4d2-c5a5db65b4c7";
+        $token = "lu-3VkkHTqTOnQ8JDRuadMAJErJQvBSQXaZL04igSTs";
+        $api_url = "https://api.mecanik.dev/v1/developer/$account/wp-feedback";
+    
+        $region = Utils::get_region($account, $token);
+	
+        $response = wp_remote_post($api_url, [
+            'headers' => [
+                'Authorization' => 'Bearer '.$token,
+                'Content-Type' => 'application/json; charset=utf-8',
+            ],
+            'body' => json_encode([
+                'reason'             => sanitize_text_field($_POST['reason']),
+                'comments'           => sanitize_textarea_field($_POST['comments']),
+                'wp_plugin_name'     => 'cf-image-resizing',
+                'wp_plugin_version'  => CF_IMAGE_RESIZING_VERSION,
+                'wp_site_url'        => get_bloginfo('url'),
+                'wp_version'         => Utils::get_wp_version(),
+                'wp_locale'          => get_locale(),
+                'wp_multisite'       => is_multisite(),
+                'php_version'        => Utils::get_php_version(),
+                'db_type'            => Utils::get_db_type(),
+                'db_version'         => Utils::get_db_version(),
+                'server_type'        => Utils::get_server_type(),
+                'server_version'     => Utils::get_server_version(),
+                'date_created'       => current_time('mysql'),
+                'region'             => $region['recommended-storage-region'],
+            ]),
+            'method' => 'PUT',
+            'data_format' => 'body'
+        ]);
+    
+        // Check for errors in the response body
+        $response_body = wp_remote_retrieve_body($response);
+        $response_data = json_decode($response_body);
+    
+        if ($response_data && isset($response_data->success) && $response_data->success === false) {
+            $error_message = isset($response_data->errors[0]->message) ? esc_html($response_data->errors[0]->message) : 'Unknown error';
+            wp_send_json_error($error_message, 400);
+            exit();
+        }
+        else if ($response_data && isset($response_data->success) && $response_data->success === true && isset($response_data->error)) {
+            wp_send_json_error($response_data->error, 400);
+            exit();
+        }
+        
+        wp_send_json_success($response_data, 200, 0);
+	}
+	
+	add_action('wp_ajax_send_cf_image_resizing_admin_feedback',  'send_cf_image_resizing_admin_feedback');
+	
+	function enqueue_feedback_scripts($hook_suffix)
+    {
+        if (!isset($hook_suffix)) {
+            return;
+        }
+        
+        if ('plugins.php' !== $hook_suffix) {
+            return;
+        }
+    
+        wp_enqueue_style('cf-image-resizing-feedback-style', plugins_url('/', __FILE__) . 'assets/feedback.css?nocache='.substr(uniqid(),-10), [], CF_IMAGE_RESIZING_VERSION, 'all');
+        wp_enqueue_script('cf-image-resizing-feedback-script', plugins_url('/', __FILE__) . 'assets/feedback.js?nocache='.substr(uniqid(),-10), [], CF_IMAGE_RESIZING_VERSION, false);
+
+        wp_localize_script('cf-image-resizing-feedback-script', 'params', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'ajax_send_cf_image_resizing_admin_feedback_nonce' => wp_create_nonce('cf_image_resizing_admin_feedback_nonce'),
+        ]);
+    }
+	
+	add_action('admin_enqueue_scripts', 'enqueue_feedback_scripts');
+	
     /**
      * Activation hook.
      */
@@ -994,7 +1222,6 @@ if (is_admin())
 		update_option('cf_image_resizing_strip_img_sizes', true);
 		update_option('cf_image_resizing_add_img_sizes', true);
 		update_option('cf_image_resizing_fix_vc_composer', false);
-
 		
         return true;
     }
