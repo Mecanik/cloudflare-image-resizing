@@ -3,8 +3,8 @@ Contributors: Mecanik
 Donate link: https://github.com/sponsors/Mecanik
 Tags: image, image-optimization, image-resizing, cloudflare images, optimizer, optimize, cloudflare, cloudflare-image-resizing, resize-images, performance, pagespeed, core web vitals, seo, speed, smush, jpg, png, gif, compression, compress, images, pictures, reduce-image-size, image-optimize
 Requires at least: 5.0
-Tested up to: 6.3.2
-Stable tag: 1.5.3
+Tested up to: 6.4.3
+Stable tag: 1.5.5
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -146,6 +146,16 @@ Yes, you can. However you need to edit manually the config.php as of this writin
 2. Example plugin setup
 
 == Changelog ==
+
+##### Version 1.5.5
+
+- Tested up to WordPress 6.4.3
+- Support more images
+
+##### Version 1.5.4
+
+- Tested up to WordPress 6.4.1
+- Fixed bug in plugin deactivation feedback
 
 ##### Version 1.5.3
 

@@ -62,7 +62,7 @@
 
 ### Assistance
  In your are in immediate need of commercial help/advice/assistance, I can offer you my assistance for a small fee.
- Please do contact me via my email or if you cannot do so open an issue.
+ Please do contact me via my the [consultation page](https://mecanik.dev/en/consulting/) or if you cannot do so open an issue.
  
 ### Support me
  Buy me a coffee to give me more energy and write more code :)
