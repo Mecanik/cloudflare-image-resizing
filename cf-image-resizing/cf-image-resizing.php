@@ -3,7 +3,7 @@
 * Plugin Name: Cloudflare Image Resizing
 * Plugin URI: https://wordpress.org/plugins/cf-image-resizing/
 * Description: Optimize images on-the-fly using Cloudflare's Image Resizing service, improving performance and core web vitals.
-* Version: 1.5.5
+* Version: 1.5.6
 * Author: Mecanik
 * Author URI: https://mecanik.dev/en/?utm_source=wp-plugins&utm_campaign=author-uri&utm_medium=wp-dash
 * License: GPLv3 or later
@@ -20,7 +20,7 @@ if (!defined('ABSPATH')) {
 
 require_once('config.php');
 
-define('CF_IMAGE_RESIZING_VERSION', '1.5.5');
+define('CF_IMAGE_RESIZING_VERSION', '1.5.6');
 
 // Utilities class
 class Utils
