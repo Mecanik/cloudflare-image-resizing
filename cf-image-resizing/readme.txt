@@ -1,10 +1,10 @@
 === Cloudflare Image Resizing - Optimize & Accelerate Your Images ===
 Contributors: Mecanik
 Donate link: https://github.com/sponsors/Mecanik
-Tags: image, image-optimization, image-resizing, cloudflare images, optimizer, optimize, cloudflare, cloudflare-image-resizing, resize-images, performance, pagespeed, core web vitals, seo, speed, smush, jpg, png, gif, compression, compress, images, pictures, reduce-image-size, image-optimize
+Tags: image-optimization, image-resizing, cloudflare, performance, pagespeed
 Requires at least: 5.0
 Tested up to: 6.8.2
-Stable tag: 1.5.6
+Stable tag: 1.5.7
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -146,6 +146,12 @@ Yes, you can. However you need to edit manually the config.php as of this writin
 2. Example plugin setup
 
 == Changelog ==
+
+##### Version 1.5.7
+
+- Patched CVE-2025-8723 and implemented additional hardening measures.
+- Enhanced overall plugin security and input validation.
+- Added more configuration options to the settings interface for greater customization.
 
 ##### Version 1.5.6
 
