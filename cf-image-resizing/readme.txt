@@ -3,8 +3,8 @@ Contributors: Mecanik
 Donate link: https://github.com/sponsors/Mecanik
 Tags: image-optimization, image-resizing, cloudflare, performance, pagespeed
 Requires at least: 5.0
-Tested up to: 6.8.2
-Stable tag: 1.5.7
+Tested up to: 6.9.3
+Stable tag: 1.5.8
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 
@@ -146,6 +146,16 @@ Yes, you can. However you need to edit manually the config.php as of this writin
 2. Example plugin setup
 
 == Changelog ==
+
+##### Version 1.5.8
+
+- Fixed an issue where the content filter (Hook 6) was not rewriting image URLs correctly.
+- Improved image URL replacement to produce properly quoted HTML attributes.
+- Improved path validation in image size detection.
+- Improved image file extension matching to support uppercase extensions and prevent false positives.
+- Improved debug output escaping.
+- Fixed database query to respect custom table prefixes.
+- Performance improvements for the attribute escape and clean URL hooks.
 
 ##### Version 1.5.7
 
